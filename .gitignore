@@ -3,3 +3,8 @@
 
 # Database
 *.sqlite3
+
+.env
+
+venv/
+env/
