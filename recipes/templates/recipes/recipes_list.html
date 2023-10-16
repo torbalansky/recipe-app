@@ -1,0 +1,78 @@
+{% extends 'recipes/base.html' %}
+{% load static %}
+{% block content %}
+   
+<style>
+
+    html, body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .background-container {
+        position: relative;
+        background-image: url("{% static 'recipes/images/recipe_list.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .recipe-container {
+        position: relative;
+        z-index: 1;
+        padding: 20px; 
+    }
+    
+    .card {
+        max-width: 400px; 
+        margin: 10px;
+        text-align: center;
+    }
+
+    .card img {
+        width: 100%; 
+        height: 200px; 
+        object-fit: cover; 
+    }
+
+    .card .card-text {
+        max-height: 100px;
+        overflow: hidden;
+    }
+
+    h2 {
+        font-family: 'Nunito', sans-serif;
+        font-size: 56px;
+        text-align: center;
+        color: white;
+        font-weight: 900;
+        font-style: italic;
+    }
+</style>
+
+
+<div class="background-container">
+    <div class="recipe-container">
+        <h2>Recipes</h2>
+        <div class="container">
+            <div class="row">
+                {% for recipe in recipes %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="{{ recipe.pic.url }}" class="card-img-top" alt="{{ recipe.title }}">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ recipe.title }}</h3>
+                                <p class="card-text">{{ recipe.description }}</p>
+                                <a class="button" href="{% url 'recipes:recipes_details' recipe.id %}">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
