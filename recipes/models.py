@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 # Model for individual ingredients
 class Ingredient(models.Model):
@@ -57,3 +59,16 @@ def create_or_update_ingredients(sender, instance, created, **kwargs):
                 name=ingredient.name,
             )
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    date_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.user.username
+
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        user_profile = Profile(user=instance)
+        user_profile.save()
+
+post_save.connect(create_profile, sender=User)

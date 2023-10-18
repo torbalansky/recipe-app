@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient, Profile
 from django.contrib.auth.models import Group, User
 
 @admin.register(Recipe)
@@ -11,11 +11,14 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', ) 
 
 admin.site.unregister(Group)
+class ProfileInline(admin.StackedInline):
+    model = Profile
 
 #expand user model
 class UserAdmin(admin.ModelAdmin):
     model = User
     fields = ["username"]
+    inlines = [ProfileInline]
 
 #unregister user
 admin.site.unregister(User)

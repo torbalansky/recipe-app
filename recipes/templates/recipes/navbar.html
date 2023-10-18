@@ -9,11 +9,22 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'recipes:recipes_list' %}">Recipes</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Profile</a>
-          </li>
-          
-        </ul>
+          {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'recipes:profile' user.pk %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'recipes:logout' %}">Logout</a>
+                </li>
+          {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'recipes:register' %}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'recipes:login' %}">Login</a>
+                </li>
+            {% endif %}
+      </ul>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
