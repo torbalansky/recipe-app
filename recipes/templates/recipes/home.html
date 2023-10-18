@@ -43,7 +43,11 @@
     <div class="welcome-box">
         <h1>Welcome to my Recipe App</h1>
         <p>Explore delicious and easy molecular kitchen recipes!</p>
+        {% if user.is_authenticated %}
+            <a class="button" href="{% url 'recipes:recipes_list' %}">Explore Recipes</a>
+        {% else %}
         <a class="button" href="{% url 'recipes:login' %}">Get Started</a>
+        {% endif %}
     </div>
 </div>
 
