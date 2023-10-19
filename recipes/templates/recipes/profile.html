@@ -21,4 +21,10 @@ h2 {
 }
 </style>
 	<h2> {{ profile.user.username }}'s Profile</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ formset.as_table }}
+    <button type="submit">Create Recipe</button>
+  </form>
 {% endblock %}

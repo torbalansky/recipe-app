@@ -1,6 +1,28 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Recipe, Ingredient
+
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ['title', 'description', 'ingredients', 'cooking_time', 'instructions', 'difficulty', 'author', 'pic']
+    
+    ingredients = forms.CharField(
+        max_length=100, label="Ingredients",
+        widget=forms.TextInput(attrs={'placeholder': 'Enter ingredients, separated by commas'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(RecipeForm, self).__init__(*args, **kwargs)
+        self.fields['author'].required = False
+
+    def clean_ingredients(self):
+        ingredients = self.cleaned_data.get('ingredients')
+        if ingredients:
+            return ingredients.strip()
+        else:
+            return ""
 
 
 class SignUpForm(UserCreationForm):

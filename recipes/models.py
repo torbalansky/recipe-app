@@ -30,6 +30,7 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     pic = models.ImageField(upload_to='recipes', default='no_picture.png')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     def calculate_difficulty(self):
         
