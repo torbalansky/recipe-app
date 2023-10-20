@@ -2,29 +2,86 @@
 {% load static %}
 {% block content %}
 <style>
-body {
-    position: relative;
-    background-color: rgb(158, 141, 160);
-    width: 100%;
-    height: 100%;
-    color: white;
-    text-align: center;
+  .label-width {
+    min-width: 150px; 
+    display: inline-block;
+    margin-bottom: 20px;
   }
-h2 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 56px;
-    text-align: center;
-    color: white;
-    font-weight: 600;
-    font-style: italic;
-    margin-top: 20px;
-}
 </style>
-	<h2> {{ profile.user.username }}'s Profile</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    {{ formset.as_table }}
-    <button type="submit">Create Recipe</button>
-  </form>
+<div class="bg-transparent text-dark text-center">
+  <h3 class="mt-4">Welcome, {{ profile.user.username }}!</h3>
+</div>
+<div class="container my-5">
+  <div class="row">
+      <div class="col-md-6">
+          <div class="card">
+              <div class="card-header bg-primary text-white">
+                  <h3 class="mb-0">Create a New Recipe:</h3>
+              </div>
+              <div class="card-body">
+                  <form method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="form-group">
+                          <label for="id_title" class="label-width">Title:</label>
+                          {{ form.title }}
+                      </div>
+                      <div class="form-group">
+                          <label for="id_description" class="label-width">Description:</label>
+                          {{ form.description }}
+                      </div>
+                      <div class="form-group">
+                          <label for="id_cooking_time" class="label-width">Cooking Time(min):</label>
+                          {{ form.cooking_time }}
+                      </div>
+                      <div class="form-group">
+                          <label for="id_recipe_ingredients" class="label-width">Ingredients:</label>
+                          {{ form.recipe_ingredients }}
+                      </div>
+                      <div class="form-group">
+                          <label for="id_instructions" class="label-width">Instructions:</label>
+                          {{ form.instructions }}
+                      </div>
+                      <div class="form-group">
+                        <label for="id_pic" class="label-width">Image (optional):</label>
+                        {{ form.pic }}
+                      </div>                    
+                      <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Create Recipe</button>
+                    </div>                    
+                  </form>
+              </div>
+          </div>
+      </div>
+    
+      <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Your Recipes</h4>
+            </div>
+            <div class="card-body">
+                {% for recipe in user_recipes %}
+                <div class="card mb-2 bg-dark text-white">
+                    <div class="row g-0">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <img src="{{ recipe.pic.url }}" class="img-fluid rounded-start" alt="{{ recipe.title }}" style="width: 100%; height: 90%;">
+                        </div>
+                        <div class="col-md-8 bg-dark text-white">
+                            <div class="card-body" style="color: rgb(230, 226, 226); font-weight: lighter;">
+                                <h5 class="card-title">{{ recipe.title }}</h5>
+                                <p class="card-text">{{ recipe.description }}</p>
+                                <p class="card-text"><small style="color: rgb(213, 209, 209); font-weight: lighter;">Last updated {{ recipe.created_at|timesince }} ago</small></p>
+                                <a href="#" class="btn btn-warning">Update</a>
+                                <a href="#" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    
+  </div>
+</div>
 {% endblock %}

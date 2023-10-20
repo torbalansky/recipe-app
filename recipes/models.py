@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 
 # Model for individual ingredients
 class Ingredient(models.Model):
@@ -12,6 +11,21 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+class RecipeIngredient(models.Model):
+    recipe = models.ForeignKey(
+        "Recipe", on_delete=models.CASCADE, related_name="ingredients_used"
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="recipes_used",
+    )
+
+    def __str__(self):
+        return f"{self.ingredient} - {self.recipe}"
 
 # Model for recipes, which have a many-to-many relationship with ingredients
 class Recipe(models.Model):
@@ -46,19 +60,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
-
-# A signal receiver that is triggered after a Recipe is created or updated
-@receiver(post_save, sender=Recipe)
-def create_or_update_ingredients(sender, instance, created, **kwargs):
-    for ingredient in instance.ingredients.all():
-        ingredient_name = ingredient.name
-        existing_ingredient = Ingredient.objects.filter(name=ingredient_name).first()
-        if existing_ingredient:
-            existing_ingredient.save()
-        else:
-            Ingredient.objects.create(
-                name=ingredient.name,
-            )
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

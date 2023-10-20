@@ -1,30 +1,44 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Recipe, Ingredient
+from .models import Recipe
 
 class RecipeForm(forms.ModelForm):
-    class Meta:
-        model = Recipe
-        fields = ['title', 'description', 'ingredients', 'cooking_time', 'instructions', 'difficulty', 'author', 'pic']
-    
-    ingredients = forms.CharField(
-        max_length=100, label="Ingredients",
-        widget=forms.TextInput(attrs={'placeholder': 'Enter ingredients, separated by commas'})
+    title = forms.CharField(
+        label="Title",
+        widget=forms.TextInput(attrs={"class": "form-item"}),
     )
 
-    def __init__(self, *args, **kwargs):
-        super(RecipeForm, self).__init__(*args, **kwargs)
-        self.fields['author'].required = False
+    description = forms.CharField(
+        label="Description",
+        widget=forms.Textarea(attrs={"class": "form-item"}),
+    )
 
-    def clean_ingredients(self):
-        ingredients = self.cleaned_data.get('ingredients')
-        if ingredients:
-            return ingredients.strip()
-        else:
-            return ""
+    cooking_time = forms.IntegerField(
+        label="Cooking Time(min)",
+        widget=forms.NumberInput(attrs={"class": "form-item"}),
+    )
 
+    recipe_ingredients = forms.CharField(
+        max_length=600,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-item", "placeholder": "e.g. ingredient1, ingredient2"}),
+    )
 
+    instructions = forms.CharField(
+        label="Instructions",
+        widget=forms.Textarea(attrs={"class": "form-item"}),
+    )
+
+    pic = forms.ImageField(
+        label="Picture",
+        widget=forms.FileInput(attrs={"class": "form-item"}),
+    )
+
+    class Meta:
+        model = Recipe
+        fields = ['title', 'description', 'cooking_time', 'instructions', 'pic']
+        
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}))
     first_name = forms.CharField(label="", max_length=90, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'First Name'}))
