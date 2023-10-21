@@ -2,13 +2,24 @@
 {% load static %}
 {% block content %}
 <style>
-  .label-width {
-    min-width: 150px; 
-    display: inline-block;
-    margin-bottom: 20px;
-  }
+      body {
+        position: relative;
+        background-image: url("{% static 'recipes/images/background.jpg' %}");
+        background-size:cover;
+        background-position: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .label-width {
+        min-width: 150px; 
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+
 </style>
-<div class="bg-transparent text-dark text-center">
+<div class="bg-transparent text-light text-center">
   <h3 class="mt-4">Welcome, {{ profile.user.username }}!</h3>
 </div>
 <div class="container my-5">
@@ -42,7 +53,7 @@
                           {{ form.instructions }}
                       </div>
                       <div class="form-group">
-                        <label for="id_pic" class="label-width">Image (optional):</label>
+                        <label for="id_pic" class="label-width">Image:</label>
                         {{ form.pic }}
                       </div>                    
                       <div class="form-group text-center">
@@ -63,15 +74,24 @@
                 <div class="card mb-2 bg-dark text-white">
                     <div class="row g-0">
                         <div class="col-md-4 d-flex align-items-center">
-                            <img src="{{ recipe.pic.url }}" class="img-fluid rounded-start" alt="{{ recipe.title }}" style="width: 100%; height: 90%;">
+                            <img src="{{ recipe.pic.url }}" class="img-fluid" alt="{{ recipe.title }}" style="width: 150px; height: 150px; margin-left: 5px; border-radius: 50%; border: 1px solid white">
                         </div>
                         <div class="col-md-8 bg-dark text-white">
                             <div class="card-body" style="color: rgb(230, 226, 226); font-weight: lighter;">
                                 <h5 class="card-title">{{ recipe.title }}</h5>
                                 <p class="card-text">{{ recipe.description }}</p>
                                 <p class="card-text"><small style="color: rgb(213, 209, 209); font-weight: lighter;">Last updated {{ recipe.created_at|timesince }} ago</small></p>
-                                <a href="#" class="btn btn-warning">Update</a>
-                                <a href="#" class="btn btn-danger">Delete</a>
+                                {% if request.user.username == profile.user.username %}
+                                    <a href="{% url 'recipes:recipes_details' recipe.id %}" title="View">
+                                      <span style="color: white; margin-right: 10px;">
+                                        <i class="fa-solid fa-eye"></i></span></a>
+                                    <a href="{% url 'recipes:update_recipe' recipe.id %}" title="Edit">
+                                      <span style="color: rgb(3, 248, 252); margin-right: 10px;">
+                                        <i class="fas fa-pen-to-square"></i></span></a>
+                                    <a href="{% url 'recipes:delete_recipe' recipe.id %}" title="Delete">
+                                      <span style="color: rgb(242, 156, 156);">
+                                        <i class="fas fa-trash"></i></span></a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

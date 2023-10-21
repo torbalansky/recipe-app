@@ -43,48 +43,55 @@ def create_recipe(request, user_id):
     
     return form
 
-def profile(request, pk):
+
+@login_required
+def update_recipe(request, pk):
+    recipe = get_object_or_404(Recipe, id=pk)
+   
+    if request.user == recipe.author:
+        form = RecipeForm(request.POST or None, request.FILES or None, instance=recipe)
+        
+        if request.method == 'POST':
+            if form.is_valid():
+                updated_recipe = form.save(commit=False)
+                updated_recipe.author = recipe.author  
+                updated_recipe.save()
+                updated_recipe.ingredients.clear()
+                recipe_ingredients_str = request.POST.get('recipe_ingredients', '')
+                recipe_ingredients_list = [ingredient.strip() for ingredient in recipe_ingredients_str.split(",")]
+
+                for ingredient_name in recipe_ingredients_list:
+                    ingredient, created = Ingredient.objects.get_or_create(name=ingredient_name)
+                    updated_recipe.ingredients.add(ingredient)
+                updated_recipe.difficulty = updated_recipe.calculate_difficulty()
+                updated_recipe.save()
+
+                messages.success(request, "Recipe updated successfully.")
+                return redirect('recipes:profile', pk=recipe.author.id)
+            else:
+                messages.error(request, "Form validation failed. Please check the entered data.")
+ 
+        current_ingredients = ', '.join(recipe.ingredients.values_list('name', flat=True))
+
+        return render(request, "recipes/update_recipe.html", {'form': form, 'recipe': recipe, 'recipe_ingredients': current_ingredients})
+    else:
+        messages.error(request, "This recipe is not yours.")
+        return redirect('recipes:profile')
+
+def delete_recipe(request, pk):
     if request.user.is_authenticated:
-        try:
-            profile = Profile.objects.get(user_id=pk)
-            user = profile.user
-            user_recipes = Recipe.objects.filter(author=user)
-            
-            form = create_recipe(request, pk)  
-
-            context = {
-                "profile": profile,
-                "user_recipes": user_recipes,
-                "form": form,
-            }
-
-            return render(request, "recipes/profile.html", context)
-        except Profile.DoesNotExist:
-            raise Http404("Profile does not exist")
-    else:
-        messages.error(request, "You must be logged in to access this!")
-        return redirect('recipes:login')
-
-def login_user(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)  
-            messages.success(request, "You are logged in.")
-            return redirect('recipes:home')
+        recipe = get_object_or_404(Recipe, id=pk)
+        
+        if request.user.username == recipe.author.username:
+            recipe.delete()
+            messages.success(request, "The recipe has been deleted.")
+            return redirect('recipes:profile', pk=request.user.id)
         else:
-            messages.error(request, "An error occurred. Please try again.")
-            return redirect('recipes:user_login')
+            messages.error(request, "You don't have permission to delete this recipe.")
     else:
-        return render(request, "recipes/login.html", {})
+        messages.error(request, "You must be logged in to delete a recipe.")
     
-def logout_user(request):
-    logout(request)
-    messages.success(request, "Logged out successfully.")
     return redirect('recipes:home')
-
 
 def home(request):
    return render(request, 'recipes/home.html', {})
@@ -123,3 +130,45 @@ def register_user(request):
             messages.success(request, ("You have successfully registered!"))
             return redirect('recipes:home')
     return render(request, "recipes/register.html", {'form': form})
+
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)  
+            messages.success(request, "You are logged in.")
+            return redirect('recipes:home')
+        else:
+            messages.error(request, "An error occurred. Please try again.")
+            return redirect('recipes:user_login')
+    else:
+        return render(request, "recipes/login.html", {})
+    
+def logout_user(request):
+    logout(request)
+    messages.success(request, "Logged out successfully.")
+    return redirect('recipes:home')
+
+def profile(request, pk):
+    if request.user.is_authenticated:
+        try:
+            profile = Profile.objects.get(user_id=pk)
+            user = profile.user
+            user_recipes = Recipe.objects.filter(author=user)
+            
+            form = create_recipe(request, pk)  
+
+            context = {
+                "profile": profile,
+                "user_recipes": user_recipes,
+                "form": form,
+            }
+
+            return render(request, "recipes/profile.html", context)
+        except Profile.DoesNotExist:
+            raise Http404("Profile does not exist")
+    else:
+        messages.error(request, "You must be logged in to access this!")
+        return redirect('recipes:login')
