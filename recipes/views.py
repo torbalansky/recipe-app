@@ -6,7 +6,8 @@ from django.http import Http404
 from .forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RecipeForm
+from .forms import RecipeForm, UserUpdateForm
+from django.contrib.auth.models import User
 
 @login_required
 def create_recipe(request, user_id):
@@ -172,3 +173,39 @@ def profile(request, pk):
     else:
         messages.error(request, "You must be logged in to access this!")
         return redirect('recipes:login')
+
+@login_required
+def update_user(request, pk):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        if request.method == "POST":
+            user_form = UserUpdateForm(request.POST, instance=current_user)
+
+            if user_form.is_valid():
+                user_form.save()
+                login(request, current_user)
+                messages.success(request, "Your profile has been updated.")
+                return redirect('recipes:home')
+            else:
+                messages.error(request, "There was an error updating your profile. Please try again.")
+        else:
+            user_form = UserUpdateForm(instance=current_user)
+            return render(request, "recipes/update_user.html", {'user_form': user_form })
+    else:
+        messages.success(request, "You have to be logged in.")
+        return redirect('recipes:home')
+
+def delete_user(request, pk):
+    if request.user.is_authenticated:
+        user = get_object_or_404(User, id=pk)
+        
+        if request.user == user:
+            user.delete()
+            messages.success(request, "Your account has been successfully deleted.")
+            return redirect('recipes:home')
+        else:
+            messages.error(request, "Something went wrong. Please try again.")
+    else:
+        messages.error(request, "You must be logged in to perform this task.")
+    
+    return redirect('recipes:home')

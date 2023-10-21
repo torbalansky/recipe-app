@@ -1,0 +1,16 @@
+{% extends 'recipes/base.html' %}
+
+{% block content %}
+<div class="col-md-6 offset-md-3 text-center py-2">
+    
+    <h1>Update Info:</h1>
+    <form method="POST" action="" enctype="mutlipart/form-data">
+        {%  csrf_token %}
+        {{ user_form.as_p }}
+        
+      <button type="submit" class="btn btn-warning" style="width: 200px; margin: 0 0 20px 20px;">Update</button>
+    </form>
+
+</div>
+
+{% endblock %}

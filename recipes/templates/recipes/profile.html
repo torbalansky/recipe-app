@@ -16,12 +16,36 @@
         display: inline-block;
         margin-bottom: 20px;
     }
-
-
+    .user-box {
+        background-color: rgba(89, 87, 90, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        text-align: center;
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
 </style>
-<div class="bg-transparent text-light text-center">
-  <h3 class="mt-4">Welcome, {{ profile.user.username }}!</h3>
+<div class="container">
+  <div class="user-box">
+      <h3>Welcome, {{ profile.user.username }}!</h3>
+      <p><strong>Email:</strong> {{ profile.user.email }}</p>
+      <p><strong>First Name:</strong> {{ profile.user.first_name }}</p>
+      <p><strong>Last Name:</strong> {{ profile.user.last_name }}</p>
+      {% if request.user.id == profile.user.id %}
+          <a href="{% url 'recipes:update_user' user.id %}" class="btn btn-primary update-profile">Update Profile</a>
+          <button id="deleteAccount" class="btn btn-danger update-profile" style="margin-top: 10px;">Delete Account</button>
+      {% endif %}
+  </div>
 </div>
+
 <div class="container my-5">
   <div class="row">
       <div class="col-md-6">
@@ -99,9 +123,16 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
-    
-    
+    </div>    
   </div>
 </div>
+
+  <script>
+    document.getElementById('deleteProfile').addEventListener('click', function() {
+        if (confirm('Are you sure you want to delete your account?')) {
+            window.location.href = "{% url 'recipes:delete_user' user.id %}";
+        }
+    });
+  </script>
+
 {% endblock %}

@@ -10,6 +10,7 @@ class RecipeForm(forms.ModelForm):
     )
 
     description = forms.CharField(
+        max_length=100,
         label="Description",
         widget=forms.Textarea(attrs={"class": "form-item"}),
     )
@@ -67,10 +68,22 @@ class SignUpForm(UserCreationForm):
         self.fields['password2'].help_text = ''
 
 class UserUpdateForm(forms.ModelForm):
-    email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}))
-    first_name = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'First Name'}))
-    last_name = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Last Name'}))
-    username = forms.CharField(label="", max_length=50,  widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}), help_text='' )
+    email = forms.EmailField(label="E-mail", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}))
+    first_name = forms.CharField(label="First name", max_length=50, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'First Name'}))
+    last_name = forms.CharField(label="Last name", max_length=50, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Last Name'}))
+    username = forms.CharField(label="Username", max_length=50,  widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Password'}), required=False)
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm New Password'}), required=False)
+    
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', )
+    
+    def clean(self):
+        cleaned_data = super(UserUpdateForm, self).clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+        if password != confirm_password:
+            raise forms.ValidationError("The new password and confirm password do not match.")
+        
+        return cleaned_data
