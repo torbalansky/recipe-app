@@ -3,7 +3,6 @@
 {% block content %}
    
 <style>
-
     html, body {
         margin: 0;
         padding: 0;
@@ -21,24 +20,23 @@
     .recipe-container {
         position: relative;
         z-index: 1;
-        padding: 20px; 
     }
     
     .card {
-        max-width: 400px; 
+        max-width: 500px; 
         margin: 10px;
-        text-align: center;
     }
 
     .card img {
         width: 100%; 
-        height: 200px; 
+        height: 250px; 
         object-fit: cover; 
     }
 
-    .card .card-text {
-        max-height: 100px;
-        overflow: hidden;
+    .card-img-overlay {
+        background-color: rgba(89, 87, 90, 0.7);
+        margin-top: 100px;
+        height: 150px;
     }
 
     h2 {
@@ -48,31 +46,99 @@
         color: white;
         font-weight: 900;
         font-style: italic;
+        padding: 10px;
     }
+    h3 {
+        color: white;
+    }
+    .recipe-container {
+        padding-top: 20px;
+    }
+
+    .form-inline {
+        background-color: rgba(89, 87, 90, 0.7);
+        padding: 20px;
+    }
+
+    #recipeChart {
+        max-width: 500px;  
+        width: 100%;
+        height: auto;
+        margin-bottom: 50px;
+    }
+
 </style>
 
-
 <div class="background-container">
-    <div class="recipe-container">
-        <h2>Recipes</h2>
-        <div class="container">
-            <div class="row">
-                {% for recipe in recipes %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <img src="{{ recipe.pic.url }}" class="card-img-top" alt="{{ recipe.title }}">
-                            <div class="card-body">
-                                <h3 class="card-title">{{ recipe.title }}</h3>
-                                <p class="card-text">{{ recipe.description }}</p>
-                                <a class="button" href="{% url 'recipes:recipes_details' recipe.id %}">View Recipe</a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+    <h2>Explore recipes</h2>
+    <div class="recipe-container text-center text-light" style="font-weight: bold;">
+        <form method="GET" class="form-inline justify-content-center d-md-flex">
+            {% csrf_token %}
+            <div class="form-group mx-2">
+                {{ form.Recipe_Name.label_tag }}
+                {{ form.Recipe_Name }}
             </div>
+            <div class="form-group mx-2">
+                {{ form.Ingredients.label_tag }}
+                {{ form.Ingredients }}
+            </div>
+            <div class="form-group mx-2">
+                {{ form.chart_type.label_tag }}
+                {{ form.chart_type }}
+            </div>
+            <button type="submit" class="btn btn-primary mx-4">Search</button>
+            <button type="button" id="clearButton" class="btn btn-warning mx-2">Clear</button>
+        </form>
+    </div>
+ 
+    <div class="container mt-4">
+        <div class="row">
+            {% for recipe in recipes %}
+            <div class="col-md-4 mb-2">
+                <div class="card">
+                    <img src="{{ recipe.pic.url }}" class="card-img" alt="{{ recipe.title }}">
+                    <div class="card-img-overlay">
+                        <h3 class="card-title text-light">{{ recipe.title }}</h3>
+                        <p class="card-text text-light"><small>Author: {{ recipe.author }}</small></p>
+                        <a class="btn btn-success" href="{% url 'recipes:recipes_details' recipe.id %}">View Recipe</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
+
+    {% if recipes and chart_image %}
+    <div class="chart-container text-center">
+        <h3>Chart</h3>
+        <img src="data:image/png;base64,{{ chart_image }}" alt="Chart" id="recipeChart">
+    </div>
+    {% endif %}
 </div>
 
+<script>
+    $(document).ready(function () {
+        $("#id_Ingredients").select2({
+            placeholder: "Choose ingredients",
+            allowClear: true,
+            multiple: true,
+            width: "200px",
+        });
+    });
+    $("#clearButton").click(function () {
+        var isSearchMade =
+            $("#id_Recipe_Name").val().trim() !== "" ||
+            $("#id_Ingredients").val().length !== 0 ||
+            $("#id_chart_type").val().trim() !== "";
+
+        if (isSearchMade) {
+            window.location.href = "{% url 'recipes:recipes_list' %}";
+        } else {
+            $("#id_Recipe_Name").val("");
+            $("#id_Ingredients").val(null).trigger("change");
+            $("#id_chart_type").val("");
+        }
+    });
+</script>
 
 {% endblock %}

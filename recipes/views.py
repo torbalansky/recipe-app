@@ -6,8 +6,15 @@ from django.http import Http404
 from .forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RecipeForm, UserUpdateForm
+from .forms import RecipeForm, UserUpdateForm, RecipeSearchForm
 from django.contrib.auth.models import User
+import pandas as pd
+from django.db.models import Q
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+from functools import reduce
+from operator import and_
 
 @login_required
 def create_recipe(request, user_id):
@@ -101,6 +108,88 @@ class RecipesListView(ListView):
     model = Recipe
     template_name = "recipes/recipes_list.html"
     context_object_name = "recipes"
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        recipe_name = self.request.GET.get("Recipe_Name")
+        ingredients = self.request.GET.getlist("Ingredients")
+        combined_query = Q()
+
+        if recipe_name:
+            combined_query &= Q(title__icontains=recipe_name)
+
+        if ingredients:
+            for ingredient in ingredients:
+                combined_query &= Q(ingredients__name__icontains=ingredient)
+        queryset = queryset.filter(combined_query).distinct()
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = RecipeSearchForm(self.request.GET)
+
+        if not context["recipes"]:
+            error_message = "There are no recipes with that combination of ingredients."
+            messages.error(self.request, error_message)
+            context["error_message"] = error_message
+
+        if "chart_type" in self.request.GET:
+            chart_type = self.request.GET.get("chart_type")
+            queryset = self.get_queryset()
+            data = pd.DataFrame.from_records(queryset.values('title', 'cooking_time'))
+
+            chart_data = {"title": data.get("title", []), "cooking_time": data.get("cooking_time", [])}
+
+            if chart_type == "#1":
+                chart_data["labels"] = chart_data.get("title")
+            elif chart_type == "#2":
+                chart_data["labels"] = chart_data.get("title")
+            else:
+                chart_data["labels"] = None
+            chart_image = render_chart(self.request, chart_type, chart_data)
+            context["chart_image"] = chart_image
+
+        return context
+    
+def render_chart(request, chart_type, data, **kwargs):
+    plt.switch_backend("AGG")
+    fig = plt.figure(figsize=(12, 8), dpi=100)
+    ax = fig.add_subplot(111)
+
+    if chart_type == "#1":
+        plt.title("Cooking Time by Recipe", fontsize=20)
+        plt.bar(data["title"], data["cooking_time"])
+        plt.xlabel("Recipes", fontsize=16)
+        plt.ylabel("Cooking Time (min)", fontsize=16)
+    elif chart_type == "#2":
+        plt.title("Recipes Cooking Time Comparison", fontsize=20)
+        labels = kwargs.get("labels")
+        plt.pie(data["cooking_time"], labels=None, autopct="%1.1f%%")
+        plt.legend(
+            data["title"],
+            loc="upper right",
+            bbox_to_anchor=(1.0, 1.0),
+            fontsize=12,
+        )
+    elif chart_type == "#3":
+        plt.title("Cooking Time by Recipe", fontsize=20)
+        x_values = data["title"].to_numpy()  
+        y_values = data["cooking_time"].to_numpy()  
+        plt.plot(x_values, y_values)
+        plt.xlabel("Recipes", fontsize=16)
+        plt.ylabel("Cooking Time (min)", fontsize=16)
+    else:
+        print("Unknown chart type.")
+
+    plt.tight_layout(pad=3.0)
+
+    buffer = BytesIO()
+    plt.savefig(buffer, format="png")
+    buffer.seek(0)
+    chart_image = base64.b64encode(buffer.read()).decode("utf-8")
+
+    return chart_image
 
 class RecipesDetailView(DetailView):
     model = Recipe
@@ -109,8 +198,6 @@ class RecipesDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        # Fetch the related ingredients for the specific recipe
         ingredients = RecipeIngredient.objects.filter(recipe=self.object).values_list('ingredient__name', flat=True)
         context['ingredients'] = ingredients
 
@@ -124,8 +211,6 @@ def register_user(request):
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
-
-            # Login user
             user = authenticate(username=username, password=password)
             login(request, user)
             messages.success(request, ("You have successfully registered!"))
@@ -209,3 +294,41 @@ def delete_user(request, pk):
         messages.error(request, "You must be logged in to perform this task.")
     
     return redirect('recipes:home')
+
+def search_recipes(request):
+    if request.method == 'POST':
+        recipe_name = request.POST.get('Recipe_Name')
+        ingredients = request.POST.getlist('Ingredients')
+        chart_type = request.POST.get('chart_type')
+        queryset = Recipe.objects.all()
+
+        if recipe_name:
+            queryset = queryset.filter(title__icontains=recipe_name)
+
+        if ingredients:
+            ingredient_filters = [Q(ingredients__name__icontains=ingredient) for ingredient in ingredients]
+            combined_filter = reduce(and_, ingredient_filters)
+            queryset = queryset.filter(combined_filter).distinct()
+
+        recipes = queryset
+
+        chart_image = None
+
+        if chart_type and recipes:
+            chart_data = {
+                'labels': [recipe.title for recipe in recipes],
+                'data': [recipe.cooking_time for recipe in recipes],
+            }
+            chart_image = render_chart(request, chart_type, chart_data)
+
+        if not recipes:
+            messages.error(request, "There are no recipes with that combination of ingredients.")
+            chart_image is None
+
+        return render(request, 'recipes/recipes_list.html', {
+            'recipes': recipes,
+            'chart_image': chart_image,
+            'chart_type': chart_type,
+        })
+
+    return render(request, 'recipes/recipes_list.html')

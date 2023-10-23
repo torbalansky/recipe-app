@@ -1,40 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Recipe
+from .models import Recipe, Ingredient
 
 class RecipeForm(forms.ModelForm):
-    title = forms.CharField(
-        label="Title",
-        widget=forms.TextInput(attrs={"class": "form-item"}),
-    )
-
-    description = forms.CharField(
-        max_length=100,
-        label="Description",
-        widget=forms.Textarea(attrs={"class": "form-item"}),
-    )
-
-    cooking_time = forms.IntegerField(
-        label="Cooking Time(min)",
-        widget=forms.NumberInput(attrs={"class": "form-item"}),
-    )
-
-    recipe_ingredients = forms.CharField(
-        max_length=600,
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-item", "placeholder": "e.g. ingredient1, ingredient2"}),
-    )
-
-    instructions = forms.CharField(
-        label="Instructions",
-        widget=forms.Textarea(attrs={"class": "form-item"}),
-    )
-
-    pic = forms.ImageField(
-        label="Picture",
-        widget=forms.FileInput(attrs={"class": "form-item"}),
-    )
+    title = forms.CharField(label="Title", widget=forms.TextInput(attrs={"class": "form-item"}),)
+    description = forms.CharField(max_length=100, label="Description", widget=forms.Textarea(attrs={"class": "form-item"}),)
+    cooking_time = forms.IntegerField(label="Cooking Time(min)", widget=forms.NumberInput(attrs={"class": "form-item"}),)
+    recipe_ingredients = forms.CharField( max_length=600, required=False, widget=forms.TextInput(attrs={"class": "form-item", "placeholder": "e.g. ingredient1, ingredient2"}),)
+    instructions = forms.CharField(label="Instructions", widget=forms.Textarea(attrs={"class": "form-item"}),)
+    pic = forms.ImageField( label="Picture", widget=forms.FileInput(attrs={"class": "form-item"}), )
 
     class Meta:
         model = Recipe
@@ -86,4 +61,27 @@ class UserUpdateForm(forms.ModelForm):
         if password != confirm_password:
             raise forms.ValidationError("The new password and confirm password do not match.")
         
+        return cleaned_data
+
+
+CHART_CHOICES = (
+    ("#1", "Bar Chart"),
+    ("#2", "Pie Chart"),
+    ("#3", "Line Chart"),
+)
+
+class RecipeSearchForm(forms.Form):
+    Recipe_Name = forms.CharField(required=False, max_length=50, label="Recipe Name", widget=forms.TextInput(attrs={"class": "form-item", "placeholder": "Search by Recipe Name"}))
+    Ingredients = forms.CharField(required=False, label="Ingredient", widget=forms.TextInput(attrs={"class": "form-item", "placeholder": "Search by ingredient"}))
+    chart_type = forms.ChoiceField(choices=CHART_CHOICES, required=False, widget=forms.Select(attrs={"class": "form-item"}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        recipe_name = cleaned_data.get("Recipe_Name")
+        ingredients = cleaned_data.get("Ingredients")
+
+        if not recipe_name and not ingredients:
+            raise forms.ValidationError(
+                "Please enter a recipe name or ingredient."
+            )
         return cleaned_data
