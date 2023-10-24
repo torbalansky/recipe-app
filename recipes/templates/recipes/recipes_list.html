@@ -39,22 +39,17 @@
         height: 150px;
     }
 
-    h2 {
+    h3 {
         font-family: 'Nunito', sans-serif;
-        font-size: 56px;
+        font-size: 36px;
         text-align: center;
         color: white;
         font-weight: 900;
         font-style: italic;
         padding: 10px;
+        background-color: rgba(89, 87, 90, 0.7);
     }
-    h3 {
-        color: white;
-    }
-    .recipe-container {
-        padding-top: 20px;
-    }
-
+ 
     .form-inline {
         background-color: rgba(89, 87, 90, 0.7);
         padding: 20px;
@@ -70,24 +65,26 @@
 </style>
 
 <div class="background-container">
-    <h2>Explore recipes</h2>
+  
     <div class="recipe-container text-center text-light" style="font-weight: bold;">
+        <h3>Explore recipes</h3>
+        <hr>
         <form method="GET" class="form-inline justify-content-center d-md-flex">
             {% csrf_token %}
-            <div class="form-group mx-2">
+            <div class="form-group mx-2 mb-2">
                 {{ form.Recipe_Name.label_tag }}
                 {{ form.Recipe_Name }}
             </div>
-            <div class="form-group mx-2">
+            <div class="form-group mx-2 mb-2">
                 {{ form.Ingredients.label_tag }}
                 {{ form.Ingredients }}
             </div>
-            <div class="form-group mx-2">
+            <div class="form-group mx-2 mb-2">
                 {{ form.chart_type.label_tag }}
                 {{ form.chart_type }}
             </div>
-            <button type="submit" class="btn btn-primary mx-4">Search</button>
-            <button type="button" id="clearButton" class="btn btn-warning mx-2">Clear</button>
+            <button type="submit" class="btn btn-primary mx-2">Search</button>
+            <button type="button" id="clearButton" class="btn btn-warning">Clear</button>
         </form>
     </div>
  
@@ -98,7 +95,7 @@
                 <div class="card">
                     <img src="{{ recipe.pic.url }}" class="card-img" alt="{{ recipe.title }}">
                     <div class="card-img-overlay">
-                        <h3 class="card-title text-light">{{ recipe.title }}</h3>
+                        <h4 class="card-title text-light">{{ recipe.title }}</h4>
                         <p class="card-text text-light"><small>Author: {{ recipe.author }}</small></p>
                         <a class="btn btn-success" href="{% url 'recipes:recipes_details' recipe.id %}">View Recipe</a>
                     </div>

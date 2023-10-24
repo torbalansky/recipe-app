@@ -1,6 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'recipes:home' %}">Home</a>
+      <a class="navbar-brand" href="{% url 'recipes:home' %}">
+        {% load static %}
+        <img src="{% static 'recipes/images/logo_r.png' %}" style="width: 50px;">
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -25,10 +28,17 @@
                 </li>
             {% endif %}
       </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+          
+          {% if user.is_authenticated %}
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-link">
+              <a href="{% url 'recipes:profile' request.user.id %}"  style="text-decoration: none; color: white; font-style: italic; font-weight: bold;">
+                <p>Welcome, {{ user.username }}!</p>
+              </a>       
+            </li>
+          </ul>
+        {% endif %}
+    
       </div>
     </div>
   </nav>

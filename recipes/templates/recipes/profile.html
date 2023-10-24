@@ -25,24 +25,41 @@
         text-align: center;
         width: fit-content;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
         text-align: center;
         margin-top: 20px;
+        right: 0;
+    }
+
+    @media screen and (max-width: 767px) {
+        .user-box {
+            flex-direction: column;
+        }
+
+        .btn.btn-danger.update-profile {
+            margin-top: 0;
+        }
     }
     
+    .btn.btn-danger.update-profile {
+        margin-top: 5px;
+    }
 </style>
 <div class="container">
   <div class="user-box">
-      <h3>Welcome, {{ profile.user.username }}!</h3>
+    <h4>Manage you account:</h4>
+      <p><strong> Username:</strong> {{ profile.user.username }}</p>
       <p><strong>Email:</strong> {{ profile.user.email }}</p>
       <p><strong>First Name:</strong> {{ profile.user.first_name }}</p>
       <p><strong>Last Name:</strong> {{ profile.user.last_name }}</p>
+    <div class="user-container-buttons">
       {% if request.user.id == profile.user.id %}
-          <a href="{% url 'recipes:update_user' user.id %}" class="btn btn-primary update-profile">Update Profile</a>
-          <button id="deleteAccount" class="btn btn-danger update-profile" style="margin-top: 10px;">Delete Account</button>
+          <a href="{% url 'recipes:update_user' user.id %}" class="btn btn-primary update-profile">Update Account</a>
+          <button id="deleteAccount" class="btn btn-danger update-profile">Delete Account</button>
       {% endif %}
+    </div>
   </div>
 </div>
 
