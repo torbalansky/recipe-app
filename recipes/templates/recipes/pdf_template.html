@@ -1,0 +1,16 @@
+<title>{{ recipe.title }}</title>
+
+    <h1>{{ recipe.title }}</h1>
+    <p><strong>Description:</strong> {{ recipe.description }}</p>
+    <p><strong>Ingredients:</strong>
+    <ul>
+        {% for ingredient in recipe.ingredients.all %}
+            <li>{{ ingredient.name }}</li>
+        {% endfor %}
+    </ul>
+    </p>
+    <p><strong>Cooking Time (min):</strong> {{ recipe.cooking_time }}</p>
+    <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+    <p><strong>Difficulty:</strong> {{ recipe.get_difficulty_display }}</p>
+    <p><strong>Created At:</strong> {{ recipe.created_at }}</p>
+    <p><strong>Updated At:</strong> {{ recipe.updated_at }}</p>

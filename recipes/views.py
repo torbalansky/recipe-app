@@ -15,6 +15,9 @@ import base64
 from io import BytesIO
 from functools import reduce
 from operator import and_
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 @login_required
 def create_recipe(request, user_id):
@@ -332,3 +335,25 @@ def search_recipes(request):
         })
 
     return render(request, 'recipes/recipes_list.html')
+
+@login_required
+def export_recipe_as_pdf(request, pk):
+    recipe = get_object_or_404(Recipe, id=pk)
+
+    template_path = 'recipes/pdf_template.html'
+
+    context = {
+        'recipe': recipe,
+    }
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{recipe.title}.pdf"'
+
+    template = get_template(template_path)
+    html = template.render(context)
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+    return response

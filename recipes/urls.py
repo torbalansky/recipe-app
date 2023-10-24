@@ -17,4 +17,5 @@ urlpatterns = [
     path('update_user/<int:pk>/', views.update_user, name='update_user'),
     path('delete_user/<int:pk>/', views.delete_user, name='delete_user'),
     path('search_recipes/', views.search_recipes, name='search_recipes'),
+    path('recipe/<int:pk>/export-pdf/', views.export_recipe_as_pdf, name='export_recipe_as_pdf'),
 ]

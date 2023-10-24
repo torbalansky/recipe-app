@@ -37,27 +37,30 @@
     <div class="container-fluid recipe-details">
         <div class="card">
             <img src="{{ recipe.pic.url }}" class="card-img-top" alt="{{ recipe.title }}">
-            <div class="card-body">
-                <h3 class="card-title">{{ recipe.title }}</h3>
-                <p class="card-text">{{ recipe.description }}</p>
+                <div class="card-body">
+                    <h3 class="card-title">{{ recipe.title }}</h3>
+                    <p class="card-text">{{ recipe.description }}</p>
 
-                <h4 class="mt-4">Ingredients:</h4>
-                <ul>
-                    {% for ingredient in recipe.ingredients.all %}
-                        <li>{{ ingredient.name }}</li>
-                    {% endfor %}
-                </ul>
-                <h4 class="mt-4">Coocking time (min):</h4>
-                <p>{{ recipe.cooking_time }}</p>
+                    <h4 class="mt-4">Ingredients:</h4>
+                    <ul>
+                        {% for ingredient in recipe.ingredients.all %}
+                            <li>{{ ingredient.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h4 class="mt-4">Coocking time (min):</h4>
+                    <p>{{ recipe.cooking_time }}</p>
 
-                <h4 class="mt-4">Instructions:</h4>
-                <p>{{ recipe.instructions }}</p>
+                    <h4 class="mt-4">Instructions:</h4>
+                    <p>{{ recipe.instructions }}</p>
 
-                <h4 class="mt-4">Difficulty:</h4>
-                <p>{{ recipe.difficulty }}</p>
+                    <h4 class="mt-4">Difficulty:</h4>
+                    <p>{{ recipe.difficulty }}</p>
 
-                <h4 class="mt-4">Created by:</h4>
-                <p>{{ recipe.author }}</p>
+                    <h4 class="mt-4">Created by:</h4>
+                    <p>{{ recipe.author }}</p>
+                    <div class="text-center">
+                        <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn btn-primary" style="width:300px;">Download as PDF</a>
+                </div>
             </div>
         </div>
     </div>
