@@ -62,6 +62,20 @@
         margin-bottom: 50px;
     }
 
+    .likes-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .likes-overlay i {
+        font-size: 15px;
+        margin-right: 5px;
+        color: red;
+    }
 </style>
 
 <div class="background-container">
@@ -93,6 +107,18 @@
             {% for recipe in recipes %}
             <div class="col-md-4 mb-2">
                 <div class="card">
+                    <div class="likes-overlay">
+                        {{ recipe.number_of_likes }}
+                        {% if user in recipe.likes.all %}
+                            <a href="{% url 'recipes:recipe_like' recipe.id %}">
+                                <i class="fa-solid fa-heart"></i>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'recipes:recipe_like' recipe.id %}">
+                                <i class="fa-regular fa-heart"></i>
+                            </a>
+                        {% endif %}
+                    </div>
                     <img src="{{ recipe.pic.url }}" class="card-img" alt="{{ recipe.title }}">
                     <div class="card-img-overlay">
                         <h4 class="card-title text-light">{{ recipe.title }}</h4>
