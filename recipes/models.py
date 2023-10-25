@@ -45,9 +45,12 @@ class Recipe(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     pic = models.ImageField(upload_to='recipes', default='no_picture.png')
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    likes = models.ManyToManyField(User, related_name="recipe_like", blank=True)
+
+    def number_of_likes(self):
+        return self.likes.count()
 
     def calculate_difficulty(self):
-        
         num_ingredients = self.ingredients.count()
         if self.cooking_time < 10 and num_ingredients < 4:
             return 'Easy'

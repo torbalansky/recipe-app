@@ -357,3 +357,16 @@ def export_recipe_as_pdf(request, pk):
         return HttpResponse('We had some errors <pre>' + html + '</pre>')
 
     return response
+
+def recipe_like(request, pk):
+    if request.user.is_authenticated:
+        recipe = get_object_or_404(Recipe, id=pk)
+        if recipe.likes.filter(id=request.user.id):
+            recipe.likes.remove(request.user)
+        else:
+            recipe.likes.add(request.user)
+        return redirect(request.META.get("HTTP_REFERER"))
+
+    else: 
+        messages.success(request, ("You must be logged in to perform this task."))
+        return redirect('recipes:home')
