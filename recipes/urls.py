@@ -19,4 +19,5 @@ urlpatterns = [
     path('search_recipes/', views.search_recipes, name='search_recipes'),
     path('recipe/<int:pk>/export-pdf/', views.export_recipe_as_pdf, name='export_recipe_as_pdf'),
     path('recipe_like/<int:pk>', views.recipe_like, name='recipe_like'),
+    path('share-on-facebook/<int:recipe_id>/', views.share_on_facebook, name='share-on-facebook'),
 ]

@@ -145,7 +145,7 @@
 </div>
 
   <script>
-    document.getElementById('deleteProfile').addEventListener('click', function() {
+    document.getElementById('deleteAccount').addEventListener('click', function() {
         if (confirm('Are you sure you want to delete your account?')) {
             window.location.href = "{% url 'recipes:delete_user' user.id %}";
         }

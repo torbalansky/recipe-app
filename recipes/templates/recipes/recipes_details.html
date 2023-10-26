@@ -1,6 +1,9 @@
 {% extends 'recipes/base.html' %}
 {% load static %}
 {% block content %}
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0&appId=YOUR_APP_ID&autoLogAppEvents=1" nonce="YOUR_NONCE"></script>
     <style>
         .container-fluid.recipe-details {
             background-image: url("{% static 'recipes/images/recipes_details.jpg' %}");
@@ -37,8 +40,9 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 5px;
+            color: white;
+            background-color: rgba(117, 114, 118, 0.8); 
+            padding: 2px;
             border-radius: 5px;
         }
 
@@ -48,6 +52,19 @@
             color: red;
         }
 
+        .share-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            
+        }
+
+        .share-overlay i {
+            font-size: 20px;
+            margin-right: 5px;
+            color: rgb(4, 0, 255);
+        }
+
     </style>
 
     <div class="container-fluid recipe-details">
@@ -55,14 +72,13 @@
             <div class="likes-overlay">
                 {{ recipe.number_of_likes }}
                 {% if user in recipe.likes.all %}
-                    <a href="{% url 'recipes:recipe_like' recipe.id %}">
-                        <i class="fa-solid fa-heart"></i>
-                    </a>
+                    <a href="{% url 'recipes:recipe_like' recipe.id %}"><i class="fa-solid fa-heart"></i></a>
                 {% else %}
-                    <a href="{% url 'recipes:recipe_like' recipe.id %}">
-                        <i class="fa-regular fa-heart"></i>
-                    </a>
+                    <a href="{% url 'recipes:recipe_like' recipe.id %}"><i class="fa-regular fa-heart"></i></a>
                 {% endif %}
+            </div>
+            <div class="share-overlay">
+                <div class="fb-share-button" data-href="{{ request.build_absolute_uri }}" data-layout="button_count"></div>
             </div>
             <img src="{{ recipe.pic.url }}" class="card-img-top" alt="{{ recipe.title }}">
                 <div class="card-body">
@@ -87,7 +103,7 @@
                     <h4 class="mt-4">Created by:</h4>
                     <p>{{ recipe.author }}</p>
                     <div class="text-center">
-                        <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn btn-primary" style="width:300px;">Download as PDF</a>
+                        <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn btn-primary" style="width:200px;">Download as PDF</a>
                 </div>
             </div>
         </div>

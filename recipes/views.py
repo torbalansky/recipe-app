@@ -230,8 +230,8 @@ def login_user(request):
             messages.success(request, "You are logged in.")
             return redirect('recipes:home')
         else:
-            messages.error(request, "An error occurred. Please try again.")
-            return redirect('recipes:user_login')
+            messages.error(request, "Ups, something went wrong. Please try again.")
+            return render(request, "recipes/login.html", {})
     else:
         return render(request, "recipes/login.html", {})
     
@@ -370,3 +370,7 @@ def recipe_like(request, pk):
     else: 
         messages.success(request, ("You must be logged in to perform this task."))
         return redirect('recipes:home')
+
+def share_on_facebook(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    return render(request, 'recipes/share_on_facebook.html', {'recipe': recipe})
