@@ -7,7 +7,7 @@ app_name = 'recipes'
 urlpatterns = [
     path('', views.home, name='home'),
     path('recipes_list/', views.RecipesListView.as_view(), name='recipes_list'),
-    path('recipes_details/<int:pk>/', views.RecipesDetailView.as_view(), name='recipes_details'),
+    path('recipes/<int:pk>/', views.RecipesDetailView.as_view(), name='recipes_details'),
     path('profile/<int:pk>/', views.profile, name='profile'),
     path('login/', views.login_user, name='login'),
     path('logout', views.logout_user, name='logout'),
@@ -19,5 +19,6 @@ urlpatterns = [
     path('search_recipes/', views.search_recipes, name='search_recipes'),
     path('recipe/<int:pk>/export-pdf/', views.export_recipe_as_pdf, name='export_recipe_as_pdf'),
     path('recipe_like/<int:pk>', views.recipe_like, name='recipe_like'),
-    path('share-on-facebook/<int:recipe_id>/', views.share_on_facebook, name='share-on-facebook'),
+    path('recipes/<int:recipe_id>/add_comment/', views.add_comment, name='add_comment'),
+    path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]

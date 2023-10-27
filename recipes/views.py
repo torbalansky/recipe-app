@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
-from .models import Recipe, Profile, RecipeIngredient, Ingredient
+from .models import Recipe, Profile, RecipeIngredient, Ingredient, RecipeComment
 from django.contrib import messages
 from django.http import Http404
 from .forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RecipeForm, UserUpdateForm, RecipeSearchForm
+from .forms import RecipeForm, UserUpdateForm, RecipeSearchForm, CommentForm
 from django.contrib.auth.models import User
 import pandas as pd
 from django.db.models import Q
@@ -371,6 +371,30 @@ def recipe_like(request, pk):
         messages.success(request, ("You must be logged in to perform this task."))
         return redirect('recipes:home')
 
-def share_on_facebook(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    return render(request, 'recipes/share_on_facebook.html', {'recipe': recipe})
+def add_comment(request, recipe_id):
+    if request.user.is_authenticated:
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.user = request.user
+                comment.recipe = recipe
+                comment.save()
+                return redirect('recipes:recipes_details', pk=recipe_id)
+        else:
+            form = CommentForm()
+
+        return render(request, 'recipes/recipes_details.html', {'recipe': recipe, 'form': form})
+    else:
+        return HttpResponse("You must be logged in to add a comment.")
+    
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(RecipeComment, pk=comment_id)
+    
+    if request.user == comment.user:
+        comment.delete()
+        return redirect('recipes:recipes_details', pk=comment.recipe.id)
+    else:
+        pass

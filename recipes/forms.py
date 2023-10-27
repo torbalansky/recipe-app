@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Recipe, Ingredient
+from .models import Recipe, RecipeComment
 
 class RecipeForm(forms.ModelForm):
     title = forms.CharField(label="Title", widget=forms.TextInput(attrs={"class": "form-item"}),)
@@ -85,3 +85,11 @@ class RecipeSearchForm(forms.Form):
                 "Please enter a recipe name or ingredient."
             )
         return cleaned_data
+
+
+class CommentForm(forms.ModelForm):
+    content = forms.CharField(label='', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, "placeholder": "Enter your comment"}))
+
+    class Meta:
+        model = RecipeComment
+        fields = ['content']

@@ -77,3 +77,9 @@ def create_profile(sender, instance, created, **kwargs):
         user_profile.save()
 
 post_save.connect(create_profile, sender=User)
+
+class RecipeComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    content = models.TextField()
+    date_posted = models.DateTimeField(auto_now_add=True)

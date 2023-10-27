@@ -5,7 +5,7 @@
     <div id="fb-root"></div>
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0&appId=YOUR_APP_ID&autoLogAppEvents=1" nonce="YOUR_NONCE"></script>
     <style>
-        .container-fluid.recipe-details {
+        .container-fluid.recipe-details, body {
             background-image: url("{% static 'recipes/images/recipes_details.jpg' %}");
             background-size: cover;
             background-position: center;
@@ -56,13 +56,65 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            
         }
 
-        .share-overlay i {
+        .comment-box {
+            background-color: rgba(89, 87, 90, 0.1); 
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            width: 80%;
+        }
+
+        .add-comment{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 10px;
+            margin: 10px;
+        }
+
+        .btn.btn-success {
+            margin-top: 10px;
+        }
+
+        .btn-fa {
+            position: absolute;
+            right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .btn-fa {
+                right: 0;
+                left: auto;
+                position: absolute;
+                top: 0;
+            }
+
+            .card-body.comment {
+                padding-right: 30px; 
+            }
+        }
+
+        .card-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            color: rgb(124, 124, 124);
+        }
+
+        .card-text {
+            font-family: 'Nunito', sans-serif;
             font-size: 20px;
-            margin-right: 5px;
-            color: rgb(4, 0, 255);
+        }
+
+        .card:nth-child(even) .card-body.comment {
+            background-color: rgba(255, 0, 0, 0.1); 
+        }
+
+        .card:nth-child(odd) .card-body.comment {
+            background-color: rgba(0, 0, 255, 0.1); 
         }
 
     </style>
@@ -104,8 +156,42 @@
                     <p>{{ recipe.author }}</p>
                     <div class="text-center">
                         <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn btn-primary" style="width:200px;">Download as PDF</a>
-                </div>
+                    </div>
             </div>
         </div>
     </div>
+
+    <div class="container comment-box">
+        <div class="add-comment">
+        <form method="post" action="{% url 'recipes:add_comment' recipe.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.content.label_tag }}
+                {{ form.content }}
+            </div>
+            <div>
+                <button type="submit" class="btn btn-success">Add New Review</button>
+            </div>
+        </form>
+    </div>
+        <hr>
+    <h4>Users reviews:</h4>
+        {% for comment in recipe.recipecomment_set.all %}
+        <div class="card mb-3">
+            <div class="btn-fa">
+                <form method="post" action="{% url 'recipes:delete_comment' comment.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn" title="Delete Comment"><i class="fas fa-times"></i></button>
+                </form>
+            </div>
+            <div class="card-body comment">
+                <p class="card-title">{{ comment.user.username }} - {{ comment.date_posted }}</p>
+                <p class="card-text">{{ comment.content }}</p>
+                {% if user.is_authenticated and user == comment.user %}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
 {% endblock %}
