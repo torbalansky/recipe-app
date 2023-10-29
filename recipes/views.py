@@ -397,4 +397,5 @@ def delete_comment(request, comment_id):
         comment.delete()
         return redirect('recipes:recipes_details', pk=comment.recipe.id)
     else:
-        pass
+        messages.success(request, ("You are not authorized to delete this comment."))
+        return redirect('recipes:recipes_list')

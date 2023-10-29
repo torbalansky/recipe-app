@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Ingredient, Recipe
+from .models import Ingredient, Recipe, RecipeComment
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .forms import RecipeSearchForm 
@@ -139,3 +139,43 @@ class RecipeSearchFormTest(TestCase):
         response = self.client.get(reverse('recipes:recipes_list'), form_data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue("chart_image" in response.context)
+
+class CommentViewTest(TestCase):
+    def test_add_comment_view(self):
+        user = User.objects.create_user(username="testuser", password="testpassword")
+        recipe = Recipe.objects.create(
+            title="Sample Recipe",
+            description="A test recipe",
+            cooking_time=30,
+            instructions="Test instructions",
+            difficulty="Hard",
+            author=user,
+        )
+
+        self.client.login(username="testuser", password="testpassword")
+        url = reverse('recipes:add_comment', args=[recipe.id])
+        response = self.client.post(url, {"content": "This is a test comment."})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('recipes:recipes_details', args=[recipe.id]))
+
+    def test_delete_comment_view(self):
+        user = User.objects.create_user(username="testuser", password="testpassword")
+        recipe = Recipe.objects.create(
+            title="Sample Recipe",
+            description="A test recipe",
+            cooking_time=30,
+            instructions="Test instructions",
+            difficulty="Hard",
+            author=user,
+        )
+        comment = RecipeComment.objects.create(
+            user=user,
+            recipe=recipe,
+            content="This is a test comment.",
+        )
+
+        self.client.login(username="testuser", password="testpassword")
+        url = reverse('recipes:delete_comment', args=[comment.id])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('recipes:recipes_details', args=[recipe.id]))
