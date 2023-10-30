@@ -6,7 +6,7 @@ from django.http import Http404
 from .forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RecipeForm, UserUpdateForm, RecipeSearchForm, CommentForm
+from .forms import RecipeForm, UserUpdateForm, RecipeSearchForm, CommentForm, ContactForm
 from django.contrib.auth.models import User
 import pandas as pd
 from django.db.models import Q
@@ -18,6 +18,8 @@ from operator import and_
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 @login_required
 def create_recipe(request, user_id):
@@ -399,3 +401,28 @@ def delete_comment(request, comment_id):
     else:
         messages.success(request, ("You are not authorized to delete this comment."))
         return redirect('recipes:recipes_list')
+
+def about(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            content = form.cleaned_data['content']
+
+            html = render_to_string('recipes/contact_form.html', {
+                'name': name,
+                'email': email,
+                'content': content
+            })
+
+            send_mail('The contact form subject', 'This is the message', 'torbalansky@gmail.com', ['torbalansky@gmail.com'], html_message=html)
+            messages.success(request, "Message sent. I will get back to you as soon as possible.")
+            return redirect('recipes:about')
+    else:
+        form = ContactForm()
+
+    return render(request, 'recipes/about.html', {
+        'form': form
+    })

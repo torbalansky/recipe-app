@@ -93,3 +93,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = RecipeComment
         fields = ['content']
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    content = forms.CharField(label='', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, "placeholder": "Write your message"}))

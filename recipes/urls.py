@@ -21,4 +21,5 @@ urlpatterns = [
     path('recipe_like/<int:pk>', views.recipe_like, name='recipe_like'),
     path('recipes/<int:recipe_id>/add_comment/', views.add_comment, name='add_comment'),
     path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
+    path('about/', views.about, name='about'),
 ]
