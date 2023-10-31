@@ -9,6 +9,10 @@
         min-height: 100vh;
         color: white;
         font-family: 'Nunito', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
     }
 
     .contact-info {
@@ -16,13 +20,8 @@
         border-radius: 10px;
         text-align: center;
         padding: 20px;
-    }
-
-    
-    .contact-info {
         margin: 40px 10px 0 10px;
     }
-
   
 </style>
 
@@ -31,22 +30,20 @@
         <div class="contact-info">
             <h3>About</h3>
             <h6> I began my career as a biochemist but have since transitioned into the field of web development 🧪🚀. My primary focus revolves around creating user-friendly web applications that cater to a diverse audience.
-                This recipe app is one of my educational projects*, where I've refined my web development skills. 
-                When I'm not immersed in coding, you can often find me enjoying music, exploring the beauty of the great outdoors, or engaging in sports activities.</h6>
-            <br><p> Check out some of my code:
-                <a href="https://github.com/torbalansky" target="_blank" class="btn btn-info">GitHub</a>
+                When I'm not immersed in coding, you can often find me enjoying music, exploring the beauty of the great outdoors, or engaging in sports activities.
+                This recipe app is one of my educational projects*, where I've refined my web development skills. </h6>
+            <br><p> 
+                <a href="https://github.com/torbalansky" target="_blank" class="btn btn-primary">Check out some of my code on GitHub</a>
             </p>
-            <p style="font-size: 12px; font-style: italic;"><br>*Please, be aware that the images and other content within this application are used strictly for educational purposes and are not original creations.</p>
-        </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4">
-        <div class="contact-info">
+            <br><hr>
             <h3>Contact</h3>
             <form method="post" action=".">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
+            <br>
+            <p style="font-size: 12px; font-style: italic;"><br>*Please, be aware that the images and other content within this application are used strictly for educational purposes and are not original creations.</p>
         </div>
     </div>
 </div>

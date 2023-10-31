@@ -97,4 +97,4 @@ class CommentForm(forms.ModelForm):
 class ContactForm(forms.Form):
     name = forms.CharField(max_length=100)
     email = forms.EmailField()
-    content = forms.CharField(label='', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, "placeholder": "Write your message"}))
+    content = forms.CharField(label='', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'style': 'width: 250px; margin: 0 auto;', "placeholder": "Write your message"}))

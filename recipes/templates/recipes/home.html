@@ -16,7 +16,7 @@
     }
 
     .welcome-box {
-        background-color: rgba(89, 87, 90, 0.7); 
+        background-color: rgba(0, 0, 0, 0.7);
         padding: 20px;
         border-radius: 10px;
         color: white;
@@ -25,33 +25,27 @@
         width: fit-content;
     }
 
-    .button {
-        background-color: #007BFF;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        text-decoration: none;
-        font-weight: bold;
+    h1 {
+        font-size: 60px;
     }
 
-    .button:hover {
-        background-color: #03478f;
+    span {
+        font-style: italic;
+        font-size: 66px;
     }
 </style>
 <div class="background-image">
     <div class="welcome-box">
-        <h1>Welcome to salt.</h1>
+        <h1>Welcome to <span>salt.</span></h1>
         <p>Explore delicious and easy molecular kitchen recipes!</p>
-            <a class="button" href="{% url 'recipes:recipes_list' %}">Explore Recipes</a>
+            <a class="btn btn-primary" href="{% url 'recipes:recipes_list' %}">Explore Recipes</a>
             <hr>
          <h3>or</h3>
-        <p>Create your own recipes!</p>
+        <p>Create your own recipes!</p> 
         {% if user.is_authenticated %}
-            <a class="button" href="{% url 'recipes:profile' user.pk %}">Create Recipes</a>
+            <a class="btn btn-primary" href="{% url 'recipes:profile' user.pk %}">Create Recipes</a>
         {% else %}
-            <a class="button" href="{% url 'recipes:login' %}">Get Started</a>
+            <a class="btn btn-primary" href="{% url 'recipes:login' %}">Get Started</a>
         {% endif %}
     </div>
 </div>
