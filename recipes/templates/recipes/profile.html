@@ -18,19 +18,36 @@
     }
     .user-box {
         background-color: rgba(0, 0, 0, 0.7);
-        padding: 20px;
+        padding: 10px;
         border-radius: 10px;
         color: white;
         font-family: 'Nunito', sans-serif;
-        text-align: center;
-        width: fit-content;
+        margin-top: 20px;
         display: flex;
-        flex-direction: row;
-        justify-content: center;
         align-items: center;
         text-align: center;
-        margin-top: 20px;
-        right: 0;
+        width:fit-content;
+    }
+
+    .user-box table td, .user-box table th {
+        padding: 5px;
+    }
+
+    .user-box table {
+        width: 100%;
+    }
+
+    .user-box h4 {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .user-container-buttons {
+        margin-top: 10px;
+    }
+
+    .btn.btn-primary.update-profile {
+        margin-bottom: 10px;
     }
 
     @media screen and (max-width: 767px) {
@@ -38,22 +55,38 @@
             flex-direction: column;
         }
 
-        .btn.btn-danger.update-profile {
-            margin-top: 0;
+        .btn.btn-primary.update-profile {
+            margin-bottom: 0;
         }
     }
-    
-    .btn.btn-danger.update-profile {
-        margin-top: 5px;
+
+    .card-body.create {
+        background-color: rgb(64, 64, 64);
+        color: rgb(231, 229, 229);
+        font-weight: bold;
     }
 </style>
 <div class="container">
   <div class="user-box">
-    <h4>Manage your account:</h4>
-      <p><strong> Username:</strong> {{ profile.user.username }}</p>
-      <p><strong>Email:</strong> {{ profile.user.email }}</p>
-      <p><strong>First Name:</strong> {{ profile.user.first_name }}</p>
-      <p><strong>Last Name:</strong> {{ profile.user.last_name }}</p>
+    <table>
+            <th colspan="4"><h4>Manage your account:</h4></th>
+            <tr>
+                <td>Username:</td>
+                <td>{{ profile.user.username }}</td>
+              </tr>
+              <tr>
+                <td>Email:</td>
+                <td>{{ profile.user.email }}</td>
+              </tr>
+              <tr>
+                <td>First name:</td>
+                <td>{{ profile.user.first_name }}</td>
+              </tr>
+              <tr>
+                <td>Last name:</td>
+                <td>{{ profile.user.last_name }}</td>
+              </tr>
+      </table>
     <div class="user-container-buttons">
       {% if request.user.id == profile.user.id %}
           <a href="{% url 'recipes:update_user' user.id %}" class="btn btn-primary update-profile">Update Account</a>
@@ -67,10 +100,10 @@
   <div class="row">
       <div class="col-md-6">
           <div class="card">
-              <div class="card-header bg-primary text-white">
+              <div class="card-header bg-dark text-white">
                   <h3 class="mb-0">Create a New Recipe:</h3>
               </div>
-              <div class="card-body">
+              <div class="card-body create">
                   <form method="post" enctype="multipart/form-data">
                       {% csrf_token %}
                       <div class="form-group">
@@ -107,8 +140,8 @@
     
       <div class="col-md-6">
         <div class="card">
-            <div class="card-header bg-info text-white">
-                <h4 class="mb-0">Your Recipes</h4>
+            <div class="card-header bg-secondary text-white">
+                <h3 class="mb-0">Your Recipes</h3>
             </div>
             <div class="card-body">
                 {% for recipe in user_recipes %}
