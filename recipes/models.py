@@ -83,3 +83,17 @@ class RecipeComment(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
+    parent_comment = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='replies'
+    )
+    depth = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"Comment by {self.user.username}"
+    
+    class Meta:
+        ordering = ['-date_posted']

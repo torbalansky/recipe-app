@@ -88,7 +88,17 @@ class RecipeSearchForm(forms.Form):
 
 
 class CommentForm(forms.ModelForm):
-    content = forms.CharField(label='', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, "placeholder": "Enter your comment"}))
+    content = forms.CharField(label='', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, "placeholder": "Enter your comment..."}))
+
+    class Meta:
+        model = RecipeComment
+        fields = ['content']
+
+class ReplyForm(forms.ModelForm):
+    content = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3, 'class': 'reply_form_', "placeholder": "Enter your reply..."})
+    )
+    parent_comment_username = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = RecipeComment

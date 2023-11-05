@@ -2,167 +2,211 @@
 {% load static %}
 {% block content %}
 
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0&appId=YOUR_APP_ID&autoLogAppEvents=1" nonce="YOUR_NONCE"></script>
-    <style>
-        .container-fluid.recipe-details, body {
-            background-image: url("{% static 'recipes/images/recipes_details.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            text-align:justify;
-        }
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0&appId=YOUR_APP_ID&autoLogAppEvents=1" nonce="YOUR_NONCE"></script>
+<style>
+    .container-fluid.recipe-details, body {
+        background-image: url("{% static 'recipes/images/recipes_details.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        text-align: justify;
+    }
 
-        .recipe-details {
-            background-size: cover;
-            background-position: center;
-            padding: 30px;
-        }
+    .recipe-details {
+        background-size: cover;
+        background-position: center;
+        padding: 30px;
+    }
 
-        .card {
-            max-width: 80%;
-            margin: 0 auto;
-        }
+    .card {
+        max-width: 80%;
+        margin: 0 auto;
+    }
 
-        .card-img-top {
-            object-fit: cover;
-            max-height: 400px;
-        }
+    .card-img-top {
+        object-fit: cover;
+        max-height: 400px;
+    }
 
-        h3 {
-            text-align: center;
-            padding: 10px;
-        }
+    h3 {
+        text-align: center;
+        padding: 10px;
+    }
 
-        .likes-overlay {
+    .likes-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 2px;
+        border-radius: 5px;
+    }
+
+    .btn-fa {
+        text-decoration: none;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .fas.fa-download {
+        color: white;
+        font-size: 20px;
+    }
+
+    .likes-overlay i {
+        font-size: 20px;
+        margin-right: 5px;
+        color: red;
+    }
+
+    .share-overlay {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .download-overlay {
+        position: absolute;
+        top: 10px;
+        left: 100px;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 5px;
+        padding: 2px 10px;
+    }
+
+    .comment-box {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        width: 70%;
+    }
+
+    .recipe-comment {
+        padding: 20px;
+        border: 1px solid rgb(202, 202, 202);
+        border-radius: 5px;
+        margin-left: 10px;
+        margin-bottom: 30px;
+    }
+
+    .add-comment {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin: 10px;
+        margin: 10px;
+    }
+
+    .btn.btn-success {
+        margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .btn-fa {
+            right: 0;
+            left: auto;
             position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: rgba(117, 114, 118, 0.8); 
-            padding: 2px;
-            border-radius: 5px;
+            top: 0;
         }
 
-        .likes-overlay i {
-            font-size: 20px;
-            margin-right: 5px;
-            color: red;
-        }
-
-        .share-overlay {
-            position: absolute;
-            top: 10px;
-            left: 10px;
+        .recipe-comment {
+            padding-right: 10px;
         }
 
         .comment-box {
-            background-color: rgba(89, 87, 90, 0.1); 
-            padding: 20px;
-            border-radius: 10px;
-            color: white;
-            font-family: 'Nunito', sans-serif;
-            width: 80%;
+            width: 100%;
         }
 
-        .add-comment{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin: 10px;
-            margin: 10px;
-        }
+    }
 
-        .btn.btn-success {
-            margin-top: 10px;
-        }
+    .card-title {
+        font-family: 'Nunito', sans-serif;
+        font-size: 34px;
+        color: black;
+    }
 
-        .btn-fa {
-            position: absolute;
-            right: 0;
-        }
+    .card-text {
+        font-family: 'Nunito', sans-serif;
+        font-size: 20px;
+    }
 
-        @media (max-width: 768px) {
-            .btn-fa {
-                right: 0;
-                left: auto;
-                position: absolute;
-                top: 0;
-            }
+    .title-comment,
+    .comment-text {
+        font-family: 'Nunito', sans-serif;
+        padding: 5px;
+    }
 
-            .card-body.comment {
-                padding-right: 30px; 
-            }
-        }
+    .title-comment {
+        font-size: 12px;
+    }
 
-        .card-title {
-            font-family: 'Nunito', sans-serif;
-            font-size: 14px;
-            color: rgb(124, 124, 124);
-        }
+    .comment-text {
+        font-size: 18px;
+    }
 
-        .card-text {
-            font-family: 'Nunito', sans-serif;
-            font-size: 20px;
-        }
+    .reply-form {
+        display: flex; 
+        text-align: center; 
+        align-items: center; 
+        justify-content: center;
+    }
 
-        .card:nth-child(even) .card-body.comment {
-            background-color: rgba(255, 0, 0, 0.1); 
-        }
+</style>
 
-        .card:nth-child(odd) .card-body.comment {
-            background-color: rgba(0, 0, 255, 0.1); 
-        }
+<div class="container-fluid recipe-details">
+    <div class="card">
+        <div class="likes-overlay">
+            {{ recipe.number_of_likes }}
+            {% if user in recipe.likes.all %}
+                <a href="{% url 'recipes:recipe_like' recipe.id %}"><i class="fa-solid fa-heart"></i></a>
+            {% else %}
+                <a href="{% url 'recipes:recipe_like' recipe.id %}" title="Like"><i class="fa-regular fa-heart"></i></a>
+            {% endif %}
+        </div>
+        <div class="share-overlay" title="Share on Facebook">
+            <div class="fb-share-button" data-href="{{ request.build_absolute_uri }}" data-layout="button_count"></div>
+        </div>
+        <div class="download-overlay">
+            <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn-fa" title="Download as PDF">
+                <i class="fas fa-download"></i>
+            </a>
+        </div>
+        <img src="{{ recipe.pic.url }}" class="card-img-top" alt="{{ recipe.title }}">
+        <div class="card-body">
+            <h3 class="card-title">{{ recipe.title }}</h3>
+            <p class="card-text">{{ recipe.description }}</p>
 
-    </style>
+            <h4 class="mt-4">Ingredients:</h4>
+            <ul>
+                {% for ingredient in recipe.ingredients.all %}
+                    <li>{{ ingredient.name }}</li>
+                {% endfor %}
+            </ul>
+            <h4 class="mt-4">Cooking time (min):</h4>
+            <p>{{ recipe.cooking_time }}</p>
 
-    <div class="container-fluid recipe-details">
-        <div class="card">
-            <div class="likes-overlay">
-                {{ recipe.number_of_likes }}
-                {% if user in recipe.likes.all %}
-                    <a href="{% url 'recipes:recipe_like' recipe.id %}"><i class="fa-solid fa-heart"></i></a>
-                {% else %}
-                    <a href="{% url 'recipes:recipe_like' recipe.id %}"><i class="fa-regular fa-heart"></i></a>
-                {% endif %}
-            </div>
-            <div class="share-overlay">
-                <div class="fb-share-button" data-href="{{ request.build_absolute_uri }}" data-layout="button_count"></div>
-            </div>
-            <img src="{{ recipe.pic.url }}" class="card-img-top" alt="{{ recipe.title }}">
-                <div class="card-body">
-                    <h3 class="card-title">{{ recipe.title }}</h3>
-                    <p class="card-text">{{ recipe.description }}</p>
+            <h4 class="mt-4">Instructions:</h4>
+            <p>{{ recipe.instructions }}</p>
 
-                    <h4 class="mt-4">Ingredients:</h4>
-                    <ul>
-                        {% for ingredient in recipe.ingredients.all %}
-                            <li>{{ ingredient.name }}</li>
-                        {% endfor %}
-                    </ul>
-                    <h4 class="mt-4">Coocking time (min):</h4>
-                    <p>{{ recipe.cooking_time }}</p>
+            <h4 class="mt-4">Difficulty:</h4>
+            <p>{{ recipe.difficulty }}</p>
 
-                    <h4 class="mt-4">Instructions:</h4>
-                    <p>{{ recipe.instructions }}</p>
-
-                    <h4 class="mt-4">Difficulty:</h4>
-                    <p>{{ recipe.difficulty }}</p>
-
-                    <h4 class="mt-4">Created by:</h4>
-                    <p>{{ recipe.author }}</p>
-                    <div class="text-center">
-                        <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn btn-primary" style="width:200px;">Download as PDF</a>
-                    </div>
-            </div>
+            <h4 class="mt-4">Created by:</h4>
+            <p>{{ recipe.author }}</p>
         </div>
     </div>
-
-    <div class="container comment-box">
-        <div class="add-comment">
+</div>
+<hr>
+<div class="container comment-box">
+    <div class="add-comment">
         <form method="post" action="{% url 'recipes:add_comment' recipe.id %}">
             {% csrf_token %}
             <div class="form-group">
@@ -170,28 +214,75 @@
                 {{ form.content }}
             </div>
             <div>
-                <button type="submit" class="btn btn-success">Add New Review</button>
+                <button type="submit" class="btn btn-success">Add New Comment</button>
             </div>
         </form>
     </div>
-        <hr>
-    <h4>Users reviews:</h4>
-        {% for comment in recipe.recipecomment_set.all %}
-        <div class="card mb-3">
-            <div class="btn-fa">
-                <form method="post" action="{% url 'recipes:delete_comment' comment.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn" title="Delete Comment"><i class="fas fa-times"></i></button>
-                </form>
-            </div>
-            <div class="card-body comment">
-                <p class="card-title">{{ comment.user.username }} - {{ comment.date_posted }}</p>
-                <p class="card-text">{{ comment.content }}</p>
-                {% if user.is_authenticated and user == comment.user %}
-                {% endif %}
-            </div>
+    <hr>
+    <h4>Users comments:</h4>
+    {% for comment in top_level_comments %}
+    <div class="comment-box">
+        <div class="recipe-comment" style="position: relative;">
+            {% if user.is_authenticated and user == comment.user %}
+            <form method="post" action="{% url 'recipes:delete_comment' comment.id %}" style="position: absolute; top: 0; right: 0;">
+                {% csrf_token %}
+                <button type="submit" class="btn text-white" title="Delete Comment"><i class="fa-regular fa-trash-can"></i></button>
+            </form>
+            {% endif %}
+            <p class="title-comment">{{ comment.user.username }} - {{ comment.date_posted }}</p>
+            <p class="comment-text">{{ comment.content }}</p>
+
+            <hr><br>
+            {% for reply in comment.replies.all reversed %}
+                <div class="recipe-comment" style="position: relative;">
+                    {% if user.is_authenticated and user == reply.user %}
+                        <form method="post" action="{% url 'recipes:delete_reply' reply.id %}" style="position: absolute; top: 0; right: 0;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn text-white" title="Delete Reply"><i class="fa-regular fa-trash-can"></i></button>
+                        </form>
+                    {% endif %}
+                    <p class="title-comment">{{ reply.user.username }} - {{ reply.date_posted }}</p>
+                    <p class="comment-text">{{ reply.content }}</p>
+           
+                </div>
+            {% endfor %}
+
+            <button class="toggle-reply-form btn btn-light" data-comment-id="{{ comment.id }}" style="text-decoration: none; position: absolute; bottom: 5px; right: 5px;">Reply</button>
+           
+            <form class="reply-form" id="reply-form-{{ comment.id }}" data-comment-id="{{ comment.id }}" method="post" action="{% url 'recipes:add_reply' recipe.id comment.id %}" style="display: none;">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="hidden" name="parent_comment_username" value="{{ comment.user.username }}">
+                    {{ reply_form.content }}
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Reply</button>
+                </div>
+            </form>         
         </div>
-        {% endfor %}
     </div>
-    
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    var toggleButtons = document.querySelectorAll(".toggle-reply-form");
+
+    toggleButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            var commentId = this.getAttribute("data-comment-id");
+            var replyForm = document.getElementById("reply-form-" + commentId);
+
+            if (replyForm.style.display === "none" || replyForm.style.display === "") {
+                replyForm.style.display = "block";
+                button.textContent = "Cancel"; 
+            } else {
+                replyForm.style.display = "none";
+                button.textContent = "Reply"; 
+            }
+        });
+    });
+});
+</script>
+
 {% endblock %}

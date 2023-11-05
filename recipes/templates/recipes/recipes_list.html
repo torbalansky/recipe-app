@@ -66,9 +66,10 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(0, 0, 0, 0.7);
         padding: 5px;
         border-radius: 5px;
+        color: white;
     }
 
     .likes-overlay i {
@@ -82,7 +83,6 @@
   
     <div class="recipe-container text-center text-light" style="font-weight: bold;">
         <h3>Explore recipes</h3>
-        <hr>
         <form method="GET" class="form-inline justify-content-center d-md-flex">
             {% csrf_token %}
             <div class="form-group mx-2 mb-2">

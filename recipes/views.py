@@ -6,7 +6,7 @@ from django.http import Http404
 from .forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RecipeForm, UserUpdateForm, RecipeSearchForm, CommentForm, ContactForm
+from .forms import RecipeForm, UserUpdateForm, RecipeSearchForm, CommentForm, ContactForm, ReplyForm
 from django.contrib.auth.models import User
 import pandas as pd
 from django.db.models import Q
@@ -200,11 +200,22 @@ class RecipesDetailView(DetailView):
     model = Recipe
     template_name = "recipes/recipes_details.html"
     context_object_name = "recipe"
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
         ingredients = RecipeIngredient.objects.filter(recipe=self.object).values_list('ingredient__name', flat=True)
         context['ingredients'] = ingredients
+        
+        all_comments = RecipeComment.objects.filter(recipe=self.object)
+        top_level_comments = [comment for comment in all_comments if comment.parent_comment is None]
+        
+        for comment in top_level_comments:
+            comment.replies.all().order_by('-date_posted')
+
+        context['top_level_comments'] = top_level_comments
+        context['comment_form'] = CommentForm()
+        context['reply_form'] = ReplyForm()
 
         return context
     
@@ -391,16 +402,57 @@ def add_comment(request, recipe_id):
         return render(request, 'recipes/recipes_details.html', {'recipe': recipe, 'form': form})
     else:
         return HttpResponse("You must be logged in to add a comment.")
-    
+
+def add_reply(request, recipe_id, parent_comment_id):
+    if request.user.is_authenticated:
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        parent_comment = get_object_or_404(RecipeComment, pk=parent_comment_id)
+
+        if request.method == 'POST':
+            reply_form = ReplyForm(request.POST)
+            if reply_form.is_valid():
+                reply = reply_form.save(commit=False)
+                reply.user = request.user
+                reply.recipe = recipe
+                reply.parent_comment = parent_comment
+                reply.content = f"{reply_form.cleaned_data['content']}"
+                reply.save()
+                return redirect('recipes:recipes_details', pk=recipe_id)
+        else:
+            reply_form = ReplyForm(initial={'parent_comment_username': parent_comment.user.username})
+
+        comment_form = CommentForm()
+        return render(request, 'recipes/recipes_details.html', {'recipe': recipe, 'comment_form': comment_form, 'reply_form': reply_form, 'parent_comment': parent_comment})
+    else:
+        return HttpResponse("You must be logged in to add a reply.")
+
+from django.shortcuts import redirect, get_object_or_404
+
+from django.http import HttpResponseForbidden
+
 def delete_comment(request, comment_id):
     comment = get_object_or_404(RecipeComment, pk=comment_id)
     
     if request.user == comment.user:
-        comment.delete()
+        if comment.parent_comment is None:
+            if comment.replies.exists():
+                messages.error(request, "Cannot delete a comment with replies.")
+            else:
+                comment.delete()
+        else:
+            comment.delete()
         return redirect('recipes:recipes_details', pk=comment.recipe.id)
     else:
-        messages.success(request, ("You are not authorized to delete this comment."))
-        return redirect('recipes:recipes_list')
+        return HttpResponseForbidden("You are not authorized to delete this comment.")
+
+def delete_reply(request, reply_id):
+    reply = get_object_or_404(RecipeComment, pk=reply_id)
+    
+    if request.user == reply.user:
+        reply.delete()
+        return redirect('recipes:recipes_details', pk=reply.recipe.id)
+    else:
+        return HttpResponseForbidden("You are not authorized to delete this reply.")
 
 def about(request):
     if request.method == 'POST':

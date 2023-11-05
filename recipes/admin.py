@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Recipe, Ingredient, Profile
+from .models import Recipe, Ingredient, Profile, RecipeComment
 from django.contrib.auth.models import Group, User
 
 @admin.register(Recipe)
@@ -26,3 +26,5 @@ admin.site.unregister(User)
 #register user and profile
 admin.site.register(User, UserAdmin)
 #admin.site.register(Profile)
+
+admin.site.register(RecipeComment)
