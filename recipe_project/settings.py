@@ -107,3 +107,5 @@ if 'DATABASE_URL' in os.environ:
         conn_max_age=500,
         conn_health_checks=True,
     )
+
+CSRF_TRUSTED_ORIGINS = ['https://web-production-ae1a.up.railway.app', 'http://127.0.0.1:8000']
