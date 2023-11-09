@@ -3,6 +3,9 @@ import os
 from decouple import config
 import dj_database_url
 from whitenoise import WhiteNoise
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipes',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -99,20 +103,14 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=500,
-        conn_health_checks=True,
-    )
-
-CSRF_COOKIE_SECURE = True
-
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=500,
-        conn_health_checks=True,
-    )
-
 CSRF_TRUSTED_ORIGINS = ['https://web-production-ae1a.up.railway.app', 'http://127.0.0.1:8000']
 
 WHITENOISE_USE_FINDERS = True
+
+CLOUDINARY_CONFIG = {
+    'cloud_name': config('CLOUDINARY_CLOUD_NAME'),
+    'api_key': config('CLOUDINARY_API_KEY'),
+    'api_secret': config('CLOUDINARY_API_SECRET'),
+}
+
+cloudinary.config(**CLOUDINARY_CONFIG)

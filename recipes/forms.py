@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Recipe, RecipeComment
+from cloudinary.forms import CloudinaryFileField
 
 class RecipeForm(forms.ModelForm):
     title = forms.CharField(label="Title", widget=forms.TextInput(attrs={"class": "form-item"}),)
@@ -9,7 +10,7 @@ class RecipeForm(forms.ModelForm):
     cooking_time = forms.IntegerField(label="Cooking Time(min)", widget=forms.NumberInput(attrs={"class": "form-item"}),)
     recipe_ingredients = forms.CharField( max_length=600, required=False, widget=forms.TextInput(attrs={"class": "form-item", "placeholder": "e.g. ingredient1, ingredient2"}),)
     instructions = forms.CharField(label="Instructions", widget=forms.Textarea(attrs={"class": "form-item"}),)
-    pic = forms.ImageField( label="Picture", widget=forms.FileInput(attrs={"class": "form-item"}), )
+    pic = CloudinaryFileField( label="Picture", widget=forms.FileInput(attrs={"class": "form-item"}), )
 
     class Meta:
         model = Recipe

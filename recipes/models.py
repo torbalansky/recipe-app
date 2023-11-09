@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 # Model for individual ingredients
 class Ingredient(models.Model):
@@ -43,7 +44,7 @@ class Recipe(models.Model):
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    pic = models.ImageField(upload_to='recipes', default='no_picture.png')
+    pic = CloudinaryField('recipe_pics', null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     likes = models.ManyToManyField(User, related_name="recipe_like", blank=True)
 
