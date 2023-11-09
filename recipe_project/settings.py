@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from decouple import config
 import dj_database_url
+from whitenoise import WhiteNoise
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -60,11 +61,11 @@ WSGI_APPLICATION = 'recipe_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'gG1D1FEFDE5E3*bD3fgdF-dA56Abffc1',
-        'HOST': 'viaduct.proxy.rlwy.net',
-        'PORT': '45422',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
     }
 }
 
@@ -95,6 +96,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -113,3 +115,5 @@ if 'DATABASE_URL' in os.environ:
     )
 
 CSRF_TRUSTED_ORIGINS = ['https://web-production-ae1a.up.railway.app', 'http://127.0.0.1:8000']
+
+WHITENOISE_USE_FINDERS = True
