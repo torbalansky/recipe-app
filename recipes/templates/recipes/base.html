@@ -23,6 +23,12 @@
         justify-content: center;
         margin-top: 50px; 
       }
+
+      @media (max-width: 767px) {
+      .alert {
+        max-width: 90%; 
+      }
+    }
     </style>
   </head>
   <body>
@@ -55,7 +61,7 @@
             alert.addEventListener("transitionend", function() {
               removeAlert(alert);
             });
-          }, 4000);
+          }, 2000);
         });
       });
     </script>

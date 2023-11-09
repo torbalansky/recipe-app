@@ -103,7 +103,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ['https://web-production-ae1a.up.railway.app', 'http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = ['web-production-ae1a-recipe-app-torbalansky.up.railway.app', 'http://127.0.0.1:8000']
 
 WHITENOISE_USE_FINDERS = True
 
