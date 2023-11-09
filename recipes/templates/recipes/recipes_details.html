@@ -54,7 +54,6 @@
     }
 
     .fas.fa-download {
-        color: white;
         font-size: 20px;
     }
 
@@ -74,7 +73,6 @@
         position: absolute;
         top: 10px;
         left: 100px;
-        background-color: rgba(0, 0, 0, 0.7);
         border-radius: 5px;
         padding: 2px 10px;
     }
@@ -127,10 +125,6 @@
 
         .card {
             max-width: 100%;
-        }
-
-        .download-overlay {
-            background-color: transparent;
         }
     }
 
@@ -185,7 +179,7 @@
             <div class="fb-share-button" data-href="{{ request.build_absolute_uri }}" data-layout="button_count"></div>
         </div>
         <div class="download-overlay">
-            <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn-fa" title="Download as PDF">
+            <a href="{% url 'recipes:export_recipe_as_pdf' recipe.id %}" class="btn-fa" title="Download as PDF" style="color: blue;">
                 <i class="fas fa-download"></i>
             </a>
         </div>
