@@ -61,11 +61,11 @@ WSGI_APPLICATION = 'recipe_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
+        'NAME': 'railway',
+        'USER': 'postgres',
         'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+        'HOST': 'viaduct.proxy.rlwy.net',
+        'PORT': '45422',
     }
 }
 
