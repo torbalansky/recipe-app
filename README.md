@@ -2,7 +2,11 @@
 
 Welcome to the Recipe App repository! This is a simple Django-based application designed to help users discover and manage their favorite recipes. With this app, you can create, store, and share your culinary creations. 
 
-You can visit the app here - [https://web-production-ae1a-recipe-app-torbalansky.up.railway.app/] (https://web-production-ae1a-recipe-app-torbalansky.up.railway.app/)
+You can visit the app here: [https://web-production-ae1a-recipe-app-torbalansky.up.railway.app/](https://web-production-ae1a-recipe-app-torbalansky.up.railway.app/)
+
+## Video Introduction
+
+[Watch the video](media/recipeapp_vid.mp4)
 
 ## Key Features
 
